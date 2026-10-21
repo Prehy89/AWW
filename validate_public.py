@@ -52,7 +52,9 @@ def validate(archive):
         if name.startswith('data/') and name != 'data/' + digest + '.json':
             raise ValueError('Nom de données incorrect')
     catalog = json.loads(files['catalog.json'])
-    if catalog['schemaVersion'] != 1 or len(catalog['views']) != 21:
+    # Six fixed cash views (aggressive BAM + TP), nine H4 directions. Previously 21.
+    # Also read the previous 21-view archive for coverage checks during migration.
+    if catalog['schemaVersion'] != 1 or len(catalog['views']) not in (15, 21):
         raise ValueError('Catalogue incorrect')
     for view in catalog['views']:
         for name in [view['calendar'], *view['panels']]:
